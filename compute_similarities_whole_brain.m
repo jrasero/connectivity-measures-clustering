@@ -40,6 +40,9 @@ hemispheres={'L', 'R'};
 % Save these for future use
 save('pipeline_options.mat', 'bands', 'funcs', 'rois_merged', 'measures', 'hemispheres')
 
+% Data directory
+data_dir = '/media/javi/ExtraDrive21/measures_clustering_daniele';
+
 %% Connectivity-based similarity matrix.
 % Here we compute the similarity matrix between pipeline choices using
 % the connectivity patterns concatenated across seed regions.
@@ -57,10 +60,10 @@ for iband=1:n_bands
   band = bands{iband};
 
   % Create output directory
-  mkdir(strcat('/home/javi/Documentos/measures_clustering_daniele/similarity_matrices_roi/',... 
+  mkdir(strcat('/home/javi/Documentos/measures_clustering_daniele/similarity_matrices/',... 
       'whole_brain'), band)
 
-  output_dir = strcat('/home/javi/Documentos/measures_clustering_daniele/similarity_matrices_roi/',...
+  output_dir = strcat('/home/javi/Documentos/measures_clustering_daniele/similarity_matrices/',...
        'whole_brain', "/", band);
 
   % We compute a similarity matrix per recording. 
@@ -82,7 +85,7 @@ for iband=1:n_bands
             for iroi=1:n_rois
                 roi = rois_merged{iroi};
                 for ihem=1:2
-                    folder = strcat(measures{ml}, "/", ...
+                    folder = strcat(data_dir, "/", measures{ml}, "/", ...
                         measures{ml}, "_", roi, "_", hemispheres{ihem},"_", ...
                         band, "_", funcs{fl});
                     files = dir(folder);
@@ -108,7 +111,7 @@ for iband=1:n_bands
                     for iroi=1:n_rois
                         roi = rois_merged{iroi};
                         for ihem=1:2
-                            folder = strcat(measures{mr}, "/", ...
+                            folder = strcat(data_dir, "/", measures{mr}, "/", ...
                                 measures{mr}, "_", roi, "_", hemispheres{ihem},"_", ...
                                 band, "_", funcs{fr});
                             files = dir(folder);
