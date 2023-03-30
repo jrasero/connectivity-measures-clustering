@@ -20,7 +20,11 @@ The **code** is organised as follows:
   3. "clustering_roi_68.m" : It performs the clustering for the regions and left and right hemispheres separately.
   
   
-As for the different folders, "clustering" contains the clustering results in each analyzed scenario (Whole-brain, 34 regions (left and right together) and 68 regions, "plot" contains several plots to visualize the results, "outputs" some generated files needed to plot, and "data" some files also needed throughout the analyses.
+As for the different **folders**:
+- "clustering": it contains the clustering results in each analyzed scenario (Whole-brain, 34 regions (left and right together) and 68 regions
+- "plot": it contains several plots to visualize the results.
+- "outputs": some generated files needed to plot.
+- "data" some input files also needed throughout the analyses.
   
 
 
