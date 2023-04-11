@@ -2,7 +2,7 @@
 
 Repository that clusters two different functional connectivity measures (PLV and ciPLV) and four time series extraction strategies (MaxAfter, MeanAfter, MeanBefore and PCABefore).
 
-The code is organised as follows:
+The **code** is organised as follows:
 
 - "compute_similarities.m": This is just the script that runs the following three scripts in the given order to compute the similarity matrices between pipelines:
 
@@ -19,6 +19,12 @@ The code is organised as follows:
   2. "clustering_roi_34.m" : It performs the clustering for the regions with left and right hemispheres together.
   3. "clustering_roi_68.m" : It performs the clustering for the regions and left and right hemispheres separately.
   
+  
+As for the different **folders**:
+- "clustering": it contains the clustering results in each analyzed scenario (Whole-brain, 34 regions (left and right together) and 68 regions
+- "plot": it contains several plots to visualize the results.
+- "outputs": some generated files needed to plot.
+- "data" some input files also needed throughout the analyses.
   
 
 
