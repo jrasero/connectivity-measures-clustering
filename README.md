@@ -23,7 +23,7 @@ The **code** is organised as follows:
 As for the different **folders**:
 - "clustering": it contains the clustering results in each analyzed scenario (Whole-brain, 34 regions (left and right together) and 68 regions
 - "plot": it contains several plots to visualize the results.
-- "outputs": some generated files needed to plot.
+- "outputs": some generated files.
 - "data" some input files also needed throughout the analyses.
   
 
