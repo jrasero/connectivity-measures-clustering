@@ -10,30 +10,57 @@ n_bands = length(bands);
 n_rois = length(rois_merged);
 n_recs = 160;
 
-lh_vols = readtable("data/cvs_avg35_inMNI152_desikan_vols_lh.txt");
-rh_vols = readtable("data/cvs_avg35_inMNI152_desikan_vols_rh.txt");
+[num,txt,raw] = xlsread("data/Seed_Size.xlsx");
 
-% Create volumes (34 regions, merged hemispheres)
-vols_34 = {};
+seed_size={};
+for ii=1:68
+    seed_size.(strcat(string(raw(ii,1)), "_", string(raw(ii,2)))) = num(ii);
+end
+    
+
+% lh_vols = readtable("data/cvs_avg35_inMNI152_desikan_vols_lh.txt");
+% rh_vols = readtable("data/cvs_avg35_inMNI152_desikan_vols_rh.txt");
+% 
+% % Create volumes (34 regions, merged hemispheres)
+% vols_34 = {};
+% for iroi=1:n_rois
+%     tic
+%     roi = rois_merged{iroi};
+%     disp(['Doing ROI:' ' ' roi])
+%     vols_34.(roi) = lh_vols.(strcat('lh_', roi, '_volume')) + rh_vols.(strcat('rh_', roi, '_volume'));    
+% end
+% 
+% % Create volumes (68 regions, separate hemispheres)
+% vols_68 = {};
+% for iroi=1:n_rois
+%     tic
+%     roi = rois_merged{iroi};
+%     disp(['Doing ROI:' ' ' roi])
+%     vols_68.(strcat(roi, "_L")) = lh_vols.(strcat('lh_', roi, '_volume'));
+%     vols_68.(strcat(roi, "_R")) = rh_vols.(strcat('rh_', roi, '_volume'));
+% end
+
+size_34 = {};
 for iroi=1:n_rois
     tic
     roi = rois_merged{iroi};
     disp(['Doing ROI:' ' ' roi])
-    vols_34.(roi) = lh_vols.(strcat('lh_', roi, '_volume')) + rh_vols.(strcat('rh_', roi, '_volume'));    
+    size_34.(roi) = seed_size.(strcat(roi, '_L')) + seed_size.(strcat(roi, '_R'));    
 end
 
 % Create volumes (68 regions, separate hemispheres)
-vols_68 = {};
+size_68 = {};
 for iroi=1:n_rois
     tic
     roi = rois_merged{iroi};
     disp(['Doing ROI:' ' ' roi])
-    vols_68.(strcat(roi, "_L")) = lh_vols.(strcat('lh_', roi, '_volume'));
-    vols_68.(strcat(roi, "_R")) = rh_vols.(strcat('rh_', roi, '_volume'));
+    size_68.(strcat(roi, "_L")) = seed_size.(strcat(roi, '_L'));
+    size_68.(strcat(roi, "_R")) =  seed_size.(strcat(roi, '_R'));
 end
+
+
         
 band = 'alpha';
-
 d_alpha_34 = {};
 for iroi=1:n_rois
     roi = rois_merged{iroi};
@@ -44,7 +71,7 @@ for iroi=1:n_rois
 end
 
 d_alpha_68 = {};
-fieldNames = fieldnames(vols_68);
+fieldNames = fieldnames(size_68);
 for iroi=1:numel(fieldNames)
     roi = fieldNames{iroi};
     output_dir = strcat('clustering/roi_68/',...
@@ -65,7 +92,7 @@ for iroi=1:n_rois
 end
 
 d_beta_68 = {};
-fieldNames = fieldnames(vols_68);
+fieldNames = fieldnames(size_68);
 for iroi=1:numel(fieldNames)
     roi = fieldNames{iroi};
     output_dir = strcat('clustering/roi_68/',...
@@ -86,7 +113,7 @@ for iroi=1:n_rois
 end
 
 d_theta_68 = {};
-fieldNames = fieldnames(vols_68);
+fieldNames = fieldnames(size_68);
 for iroi=1:numel(fieldNames)
     roi = fieldNames{iroi};
     output_dir = strcat('clustering/roi_68/',...
@@ -100,7 +127,7 @@ f = figure('visible','off');
 boxplot(transpose([struct2array(d_alpha_34); struct2array(d_beta_34); struct2array(d_theta_34)]),...
     'Notch','on','Labels', {'Alpha','Beta', 'Theta'})
 title('Distances distribution')
-saveas(f, 'plots/dist_vs_bands_34.png')
+saveas(f, 'plots/dist_vs_bands_34_matlab.png')
 close(f)
 
 % Plot distances across bands
@@ -108,75 +135,75 @@ f = figure('visible','off');
 boxplot(transpose([struct2array(d_alpha_68); struct2array(d_beta_68); struct2array(d_theta_68)]),...
     'Notch','on','Labels', {'Alpha','Beta', 'Theta'})
 title('Distances distribution')
-saveas(f, 'plots/dist_vs_bands_68.png')
+saveas(f, 'plots/dist_vs_bands_68_matlab.png')
 close(f)
 
-% Compute correlation between distances and Volumes
+% Compute correlation between distances and seed size
 % Alpha
-[R1, P1] = corrcoef(struct2array(vols_34), struct2array(d_alpha_34));
+[R1, P1] = corrcoef(struct2array(size_34), struct2array(d_alpha_34));
 
 f = figure('visible','off');
-scatter(struct2array(vols_34), struct2array(d_alpha_34), 'b','*')
+scatter(struct2array(size_34), struct2array(d_alpha_34), 'b','*')
 title(strcat('Alpha Band: R = ', num2str(R1(1,2)), ',', ' P = ', num2str(P1(1,2))))
-xlabel('Volume (mm^3)')
+xlabel('Seed size (# Vertices)')
 ylabel('Average distance')
 lsline
-saveas(f, 'plots/dist_vs_vols_alpha_34.png')
+saveas(f, 'plots/dist_vs_size_alpha_34_matlab.png')
 close(f)
 
-[R1, P1] = corrcoef(struct2array(vols_68), struct2array(d_alpha_68));
+[R1, P1] = corrcoef(struct2array(size_68), struct2array(d_alpha_68));
 
 f = figure('visible','off');
-scatter(struct2array(vols_68), struct2array(d_alpha_68), 'b','*')
+scatter(struct2array(size_68), struct2array(d_alpha_68), 'b','*')
 title(strcat('Alpha Band: R = ', num2str(R1(1,2)), ',', ' P = ', num2str(P1(1,2))))
-xlabel('Volume (mm^3)')
+xlabel('Seed size (# Vertices)')
 ylabel('Average distance')
 lsline
-saveas(f, 'plots/dist_vs_vols_alpha_68.png')
+saveas(f, 'plots/dist_vs_size_alpha_68_matlab.png')
 close(f)
 
 % Beta
-[R2, P2] = corrcoef(struct2array(vols_34), struct2array(d_beta_34));
+[R2, P2] = corrcoef(struct2array(size_34), struct2array(d_beta_34));
 
 f = figure('visible','off');
-scatter(struct2array(vols_34), struct2array(d_beta_34), 'mo')
+scatter(struct2array(size_34), struct2array(d_beta_34), 'mo')
 title(strcat('Beta Band: R = ', num2str(R2(1,2)), ',', ' P = ', num2str(P2(1,2))))
-xlabel('Volume (mm^3)')
+xlabel('Seed size (# Vertices)')
 ylabel('Average distance')
 lsline
-saveas(f, 'plots/dist_vs_vols_beta_34.png')
+saveas(f, 'plots/dist_vs_size_beta_34_matlab.png')
 close(f)
 
-[R2, P2] = corrcoef(struct2array(vols_68), struct2array(d_beta_68));
+[R2, P2] = corrcoef(struct2array(size_68), struct2array(d_beta_68));
 
 f = figure('visible','off');
-scatter(struct2array(vols_68), struct2array(d_beta_68), 'mo')
+scatter(struct2array(size_68), struct2array(d_beta_68), 'mo')
 title(strcat('Beta Band: R = ', num2str(R2(1,2)), ',', ' P = ', num2str(P2(1,2))))
-xlabel('Volume (mm^3)')
+xlabel('Seed size (# Vertices)')
 ylabel('Average distance')
 lsline
-saveas(f, 'plots/dist_vs_vols_beta_68.png')
+saveas(f, 'plots/dist_vs_size_beta_68_matlab.png')
 close(f)
 
 % Theta
-[R3, P3] = corrcoef(struct2array(vols_34), struct2array(d_theta_34));
+[R3, P3] = corrcoef(struct2array(size_34), struct2array(d_theta_34));
 
 f = figure('visible','off');
-scatter(struct2array(vols_34), struct2array(d_theta_34), 'rx')
+scatter(struct2array(size_34), struct2array(d_theta_34), 'rx')
 title(strcat('Theta Band: R = ', num2str(R3(1,2)), ',', ' P = ', num2str(P3(1,2))))
-xlabel('Volume (mm^3)')
+xlabel('Seed size (# Vertices)')
 ylabel('Average distance')
 lsline
-saveas(f, 'plots/dist_vs_vols_theta_34.png')
+saveas(f, 'plots/dist_vs_size_theta_34_matlab.png')
 close(f)
 
-[R3, P3] = corrcoef(struct2array(vols_68), struct2array(d_theta_68));
+[R3, P3] = corrcoef(struct2array(size_68), struct2array(d_theta_68));
 
 f = figure('visible','off');
-scatter(struct2array(vols_68), struct2array(d_theta_68), 'rx')
+scatter(struct2array(size_68), struct2array(d_theta_68), 'rx')
 title(strcat('Theta Band: R = ', num2str(R3(1,2)), ',', ' P = ', num2str(P3(1,2))))
-xlabel('Volume (mm^3)')
+xlabel('Seed size (# Vertices)')
 ylabel('Average distance')
 lsline
-saveas(f, 'plots/dist_vs_vols_theta_68.png')
+saveas(f, 'plots/dist_vs_size_theta_68_matlab.png')
 close(f)
