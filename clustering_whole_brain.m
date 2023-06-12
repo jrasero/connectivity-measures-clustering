@@ -21,9 +21,6 @@ end
     tic
     band = bands{iband};
     disp(['Doing band:' ' ' band])
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%% First whole-brain %%%%%%%%%%%%%%%%%%%%%%%%%%%%
      
     mkdir(strcat('/home/javi/Documentos/measures_clustering_daniele/clustering/',... 
         'whole_brain'), band)
